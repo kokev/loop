@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OrderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,12 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 //Orders endpoints
-Route::middleware('auth:api')->group(function ()
-{
-    Route::get('orders','OrderController@index');
-    Route::post('orders','OrderController@create');
-    Route::put('orders/{id}','OrderController@update');
-    Route::get('orders/{id}','OrderController@view');
-    Route::post('orders/{id}/add','OrderController@add');
-    Route::post('orders/{id}/pay','OrderController@pay');
-});
+Route::get('/orders',[OrderController::class, 'index']);
+Route::post('orders',[OrderController::class, 'create']);
+Route::put('orders/{id}',[OrderController::class, 'update']);
+Route::get('orders/{id}',[OrderController::class, 'view']);
+Route::delete('orders/{id}',[OrderController::class, 'delete']);
+Route::post('orders/{id}/add',[OrderController::class, 'add']);
+Route::post('orders/{id}/pay',[OrderController::class, 'pay']);

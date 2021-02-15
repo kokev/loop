@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentProviderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,5 +30,4 @@ Route::post('orders/{id}/add',[OrderController::class, 'add']);
 Route::post('orders/{id}/pay',[OrderController::class, 'pay']);
 
 //Payment provider endpoints
-Route::get('payment-providers',[PaymentProvider::class, 'index']);
-Route::get('payment-providers/{id}',[PaymentProvider::class, 'view']);
+Route::get('payment-providers',[PaymentProviderController::class, 'index']);

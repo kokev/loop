@@ -16,23 +16,4 @@ class PaymentProviderController extends Controller
     {
         return PaymentProvider::all();
     }
-
-    /**
-     * Selected payment provider all details.
-     * 
-     * @param Request $request
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function view(Request $request, $id)
-    {
-        $validateId = PaymentProvider::idRules($id);
-        if($validateId) {
-            return $validateId;
-        }
-
-        return PaymentProvider::find($id);
-
-    }
 }

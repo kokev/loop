@@ -29,4 +29,14 @@ class OrderDetail extends Model
         'created_at',
         'updated_at',
     ];
+
+    /**
+     * Connect orders table with customers table
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product','product_id', 'id');
+    }
 }

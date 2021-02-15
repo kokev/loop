@@ -8,11 +8,14 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
-use App\Models\ServiceProvider;
+use App\Models\PaymentProvider;
 use App\Http\Resources\OrderViewResource;
+use App\Http\Traits\OrderTrait;
 
 class OrderController extends Controller
 {
+    use OrderTrait;
+
     /**
      * List of orders.
      *
@@ -33,12 +36,15 @@ class OrderController extends Controller
      */
     public function view(Request $request, $id)
     {
+        //Validate id
         $validateId = Order::idRules($id);
         if($validateId) {
             return $validateId;
         }
 
-        return OrderViewResource::collection(Order::find($id));
+        OrderViewResource::withoutWrapping();
+
+        return new OrderViewResource(Order::where('id',$id)->with(['customer'])->first());
 
     }
 
@@ -51,12 +57,8 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
-        //$request->validate(Order::$createRules);
-        $validator = Validator::make($request->all(), Order::$createRules); 
-
-        if($validator->fails()) {
-          return $validator->errors();
-        }
+        //Validate request body
+        $request->validate(Order::$createRules);
 
         try {
 
@@ -93,12 +95,8 @@ class OrderController extends Controller
             return $validateId;
         }
 
-        //$request->validate(Order::$updateRules);
-        //Validate body
-        $validator = Validator::make($request->all(), Order::$updateRules); 
-        if($validator->fails()) {
-          return $validator->errors();
-        }
+        //Validate request body
+        $request->validate(Order::$updateRules);
 
         try {
 
@@ -176,12 +174,8 @@ class OrderController extends Controller
             return $validateId;
         }
 
-        //$request->validate(Order::$addRules);
-        //Validate body
-        $validator = Validator::make($request->all(), Order::$addRules); 
-        if($validator->fails()) {
-            return $validator->errors();
-        }
+        //Validate request body
+        $request->validate(Order::$addRules);
 
         //Check order has payed
         $order = Order::find($id);
@@ -227,41 +221,36 @@ class OrderController extends Controller
             return $validateId;
         }
 
-        //$request->validate(Order::$payRules);
-        //Validate body
-        $validator = Validator::make($request->all(), Order::$payRules); 
-        if($validator->fails()) {
-            return $validator->errors();
-        }
+        //Validate request body
+        $request->validate(Order::$payRules);
 
         //Check order has payed
-        $order = Order::find($id);
+        $order = Order::where('id',$id)->with(['customer'])->first();
         if($order->payed) {
             return response()->json([
                 'message' => 'Can not pay a payed order!'
             ],422);
         }
 
+        //Calculate the price of the order
+        $value = $this->calculatePrice($id);
+
+        $success = false;
         try {
 
             DB::beginTransaction();
 
-            $servideProvider = ServideProvider::find($request->service_provider_id);
+            $paymentProvider = PaymentProvider::find($request->payment_provider_id);
 
-            //    $order = Order::where('id',$id)->whereHas('details', function ($query) {
-            //     sum values
-            // })->whereHas('customer', function ($query) {
-            //     
-            // })->get();
-
-            $response = Http::post($serviceProvider->url, [
+            $response = Http::post($paymentProvider->url, [
                 'order_id' => $id,
-                'email' => $order->customer->email_address,
-                'value' => $order->value
+                'customer_email' => $order->customer->email_address,
+                'value' => $value
             ]);
 
-            if($response->message == 'Payment Successful') {
-                $order->update(['payed',true]);
+            if($response['message'] == 'Payment Successful') {
+                $order->update(['payed' => true]);
+                $success = true;
             }
 
             DB::commit();
@@ -271,7 +260,13 @@ class OrderController extends Controller
             report($e);
         }
 
-        return response()->json(['success' => true],200);
+        if($success) {
+            return response()->json(['success' => true],200);
+        } else {
+            return response()->json([
+                'message' => 'Something went wrong during the payment!'
+            ],422);
+        }
 
     }
 

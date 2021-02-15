@@ -3,9 +3,15 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\OrderDetailResource;
+use App\Models\OrderDetail;
+
+use App\Http\Traits\OrderTrait;
 
 class OrderViewResource extends JsonResource
 {
+    use OrderTrait;
+
     /**
      * Transform the resource into an array.
      *
@@ -14,9 +20,14 @@ class OrderViewResource extends JsonResource
      */
     public function toArray($request)
     {
+        $value = $this->calculatePrice($this->id);
+        
         return [
-            "email" => $this->customer->email_address,
-            "details" => $this->details
+            "order_id" => $this->id,
+            "customer_first_name" => $this->customer->first_name,
+            "customer_last_name" => $this->customer->last_name,
+            "customer_email" => $this->customer->email_address,
+            "value" => $value
         ];
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\ServiceProvider;
+use App\Http\Resources\OrderViewResource;
 
 class OrderController extends Controller
 {
@@ -37,7 +38,7 @@ class OrderController extends Controller
             return $validateId;
         }
 
-        return Order::find($id);
+        return OrderViewResource::collection(Order::find($id));
 
     }
 
@@ -50,6 +51,7 @@ class OrderController extends Controller
      */
     public function create(Request $request)
     {
+        //$request->validate(Order::$createRules);
         $validator = Validator::make($request->all(), Order::$createRules); 
 
         if($validator->fails()) {
@@ -91,6 +93,7 @@ class OrderController extends Controller
             return $validateId;
         }
 
+        //$request->validate(Order::$updateRules);
         //Validate body
         $validator = Validator::make($request->all(), Order::$updateRules); 
         if($validator->fails()) {
@@ -173,6 +176,7 @@ class OrderController extends Controller
             return $validateId;
         }
 
+        //$request->validate(Order::$addRules);
         //Validate body
         $validator = Validator::make($request->all(), Order::$addRules); 
         if($validator->fails()) {
@@ -223,6 +227,7 @@ class OrderController extends Controller
             return $validateId;
         }
 
+        //$request->validate(Order::$payRules);
         //Validate body
         $validator = Validator::make($request->all(), Order::$payRules); 
         if($validator->fails()) {
@@ -243,10 +248,16 @@ class OrderController extends Controller
 
             $servideProvider = ServideProvider::find($request->service_provider_id);
 
+            //    $order = Order::where('id',$id)->whereHas('details', function ($query) {
+            //     sum values
+            // })->whereHas('customer', function ($query) {
+            //     
+            // })->get();
+
             $response = Http::post($serviceProvider->url, [
-                'order_id' => 'Steve',
-                'email' => 'Steve',
-                'value' => 'Network Administrator'
+                'order_id' => $id,
+                'email' => $order->customer->email_address,
+                'value' => $order->value
             ]);
 
             if($response->message == 'Payment Successful') {

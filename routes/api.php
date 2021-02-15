@@ -27,3 +27,7 @@ Route::get('orders/{id}',[OrderController::class, 'view']);
 Route::delete('orders/{id}',[OrderController::class, 'delete']);
 Route::post('orders/{id}/add',[OrderController::class, 'add']);
 Route::post('orders/{id}/pay',[OrderController::class, 'pay']);
+
+//Payment provider endpoints
+Route::get('payment-providers',[PaymentProvider::class, 'index']);
+Route::get('payment-providers/{id}',[PaymentProvider::class, 'view']);

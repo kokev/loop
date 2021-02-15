@@ -29,4 +29,30 @@ class PaymentProvider extends Model
         'created_at',
         'updated_at',
     ];
+
+    
+    /**
+     * Validation for payment provider  id
+     *
+     * @param int $id
+     * 
+     * @return Json|boolean
+     */
+    public static function idRules($id) {
+        $validator = Validator::make(
+            [
+                'id' => $id,
+            ],
+            [
+                'id' => 'required|integer|exists:payment_providers,id',
+            ],
+            [
+                'id.exists' => 'Payment provider doesnt exist'
+            ]
+        );
+    
+        if($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+    }
 }

@@ -92,4 +92,25 @@ class Order extends Model
     public static $payRules = [
         'service_provider_id' => 'required|integer|exists:service_provider,id'
     ];
+
+    /**
+     * Connect orders table with order_details table
+     *
+     * @var array
+     */
+    public function details()
+    {
+        return $this->belongsTo('App\Models\OrderDetail');
+    }
+
+    /**
+     * Connect orders table with customers table
+     *
+     * @var array
+     */
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\Customer');
+    }
+
 }

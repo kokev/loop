@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Rap2hpoutre\FastExcel\FastExcel;
 use App\Models\Customer;
 use App\Models\Product;
+use Illuminate\Support\Facades\Storage;
 
 class ImportCsvCommand extends Command
 {
@@ -14,9 +15,7 @@ class ImportCsvCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'importcsv
-                            {url : loopurl}
-                            {status=200 : The expected status code}';
+    protected $signature = 'importcsv';
 
     /**
      * The console command description.
@@ -42,36 +41,51 @@ class ImportCsvCommand extends Command
      */
     public function handle()
     {
-        $customerCsvUrl = "";
-        $productCsvUrl = "";
+        $customerCsvUrl = "https://loop:backend_dev@backend-developer.view.agentur-loop.com/customers.csv";
+        $productCsvUrl = "https://loop:backend_dev@backend-developer.view.agentur-loop.com/products.csv";
 
-        //Save file temporary
-        $tmpFileName = "/tmp/" . uniqid(). '.csv';
-        file_put_contents($tmpFileName, base64_decode($csv['content']));
+        //Temporary save the csv
+        $file = file_get_contents($customerCsvUrl);
+        Storage::disk('local')->put('customers.csv', $file);
 
-        $newCustomers = (new FastExcel)->configureCsv($delimiter = ';')->import($customerCsvUrl, function ($line) {
-            return Customer::create([
-                'id' => $line['id'],
-                'job_title' => $line['job_title'],
-                'email_address' => $line['email_address'],
-                'first_name' => $line['first_name'],
-                'last_name' => $line['last_name'],
-                'registered_since' => $line['registered_since'],
-                'phone' => $line['phone'],
-            ]);
+        $newCustomers = (new FastExcel)->configureCsv($delimiter = ',')->import( __DIR__ . '/../../../storage/app/customers.csv', function ($line) {
+            
+            //Parse date to make it ready for save to the database
+            $date = date_parse($line['registered_since']);
+
+            //Explode the names for two part
+            $name = explode(" ",$line['FirstName LastName']);
+
+            //Check if the date is right do the saving
+            if(empty($date['warnings'])) {
+                Customer::create([
+                    'id' => $line['ID'],
+                    'job_title' => $line['Job Title'],
+                    'email_address' => $line['Email Address'],
+                    'first_name' => $name[0],
+                    'last_name' => $name[1],
+                    'registered_since' => $date['year'].'-'.$date['month'].'-'.$date['day'],
+                    'phone' => $line['phone'],
+                ]);
+            }
         });
 
-        //Delete file after import
-        unlink($tmpFileName);
+        //Temporary save the csv
+        $file = file_get_contents($productCsvUrl);
+        Storage::disk('local')->put('products.csv', $file);
 
-        $newProducts = (new FastExcel)->configureCsv($delimiter = ';')->import($customerCsvUrl, function ($line) {
-            return Product::create([
-                'id' => $line['id'],
-                'phone' => $line['phone'],
+        $newProducts = (new FastExcel)->configureCsv($delimiter = ',')->import( __DIR__ . '/../../../storage/app/products.csv', function ($line) {
+            Product::create([
+                'id' => $line['ID'],
+                'product_name' => $line['productname'],
                 'price' => $line['price'],
             ]);
         });
 
-        return Response()->json(['success' => true], 200);
+        //Delete the saved files
+        unlink(__DIR__ . '/../../../storage/app/customers.csv');
+        unlink(__DIR__ . '/../../../storage/app/products.csv');
+        
+        return;
     }
 }

@@ -1,3 +1,4 @@
+________________
 #SET UP PROJECT#
 
 1. Install packages:
@@ -16,8 +17,8 @@
 6. Import CSVs with custom command 
     -php artisan importcsv
 
-
-#ENDPOINTS
+___________
+#ENDPOINTS#
 
 List of orders
     -GET api/orders
@@ -28,25 +29,38 @@ Selected order detailed information
 Create a new order
     -POST api/orders
     -JSON:
+    {
+        "customer_id": 10
+    }
 
 Update a selected order
     -PUT api/orders/{id}
-    -JSON:
+    -Request JSON:
+    {
+        "customer_id": 2,
+        "payed": true
+    }
 
 Delete a selected order
     -DELETE api/orders/{id}
 
 Add a new product to an order
     -POST api/orders/{id}/add
-    -JSON:
+    -Request JSON:
+    {
+        "product_id": 1 
+    }
 
 Pay an order, with a selected payment provider
-    -POST api/orders/{id}/add
-    -JSON:
+    -POST api/orders/{id}/pay
+    -Request JSON:
+    {
+        "payment_provider_id": 1
+    }
 
 List of payment providers (prepared for more providers in the future)
     -GET api/payment-providers
 
-TODO:
-    -customer és product lista végpont (csak hogy lehessen az importált adatokból )
-    -logs
+__________________
+#MY TIME SCHEDULE#
+

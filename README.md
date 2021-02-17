@@ -89,3 +89,10 @@ ___________
 __________________
 # **MY TIME SCHEDULE**
 
+1. Set up project: 2,5 hours
+
+    -routes, controllers, models, migration, postman, database
+
+2. Order enpoints: 3 hours
+
+3. CSV import command: 2,5 hours

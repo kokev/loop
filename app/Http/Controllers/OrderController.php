@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderDetail;
@@ -260,9 +261,11 @@ class OrderController extends Controller
                 'value' => $value
             ]);
 
-            if($response['message'] == 'Payment Successful') {
+            if($response->status() == 200) {
                 $order->update(['payed' => true]);
                 $success = true;
+            } else {
+                Log::info('PAYMENT_RPOVIDER_RESPONSE: '.$response);
             }
 
             DB::commit();

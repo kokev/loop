@@ -97,7 +97,7 @@ class ImportCsvCommand extends Command
 
         echo "\n- Customers import: \e[0;32mFINISHED\e[0m";
         echo "\n- All/Success: \e[0;32m".$countRows."/".$allRow."\e[0m";
-        Log::info("CUSTOMERS_CSV_IMPORT_RESULT: ".$countRows."/".$allRow);
+        Log::info("CUSTOMERS_CSV_IMPORT_RESULT (all\success): ".$countRows."/".$allRow);
 
         //Temporary save the csv
         $file = file_get_contents($productCsvUrl);
@@ -125,7 +125,7 @@ class ImportCsvCommand extends Command
 
         echo "\n- Products import: \e[0;32mFINISHED\e[0m";
         echo "\n- All/Success: \e[0;32m".$countRows."/".$allRow."\e[0m";
-        Log::info("PRODUCTS_CSV_IMPORT_RESULT: ".$countRows."/".$allRow);
+        Log::info("PRODUCTS_CSV_IMPORT_RESULT (all\success): ".$countRows."/".$allRow);
 
         //Delete the saved files
         unlink(__DIR__ . '/../../../storage/app/customers.csv');

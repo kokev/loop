@@ -34,9 +34,8 @@ ___________
 
 ## PUT and POST request header needs:
 
-    ```
-        Accept: application/json
-    ```
+    Accept: application/json
+
 
 ## List of orders
 
@@ -50,22 +49,18 @@ ___________
 
     - POST api/orders
     - JSON:
-    ```
     {
         "customer_id": 10
     }
-    ```
 
 ## Update a selected order
 
     - PUT api/orders/{id}
     - Request JSON:
-    ```
     {
         "customer_id": 2,
         "payed": true
     }
-    ```
 
 ## Delete a selected order
 
@@ -75,21 +70,17 @@ ___________
 
     - POST api/orders/{id}/add
     - Request JSON:
-    ```
     {
         "product_id": 1 
     }
-    ```
 
 ## Pay an order, with a selected payment provider
 
     - POST api/orders/{id}/pay
     - Request JSON:
-    ```
     {
         "payment_provider_id": 1
     }
-    ```
 
 ## List of payment providers (prepared for more providers in the future)
 

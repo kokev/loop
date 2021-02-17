@@ -1,5 +1,5 @@
 ________________
-#SET UP PROJECT
+# **SET UP PROJECT**
 
 1. Install packages:
 ```
@@ -30,64 +30,65 @@ ________________
     -php artisan serve
 ```
 ___________
-#ENDPOINTS
+# **ENDPOINTS**
 
-##List of orders
+## List of orders
 
--GET api/orders
+    - GET api/orders
 
-##Selected order detailed information
+## Selected order detailed information
 
--GET api/orders/{id}
+    - GET api/orders/{id}
 
-##Create a new order
+## Create a new order
 
--POST api/orders
--JSON:
-```
-{
-    "customer_id": 10
-}
-```
+    - POST api/orders
+    - JSON:
+    ```
+    {
+        "customer_id": 10
+    }
+    ```
 
-##Update a selected order
+## Update a selected order
 
--PUT api/orders/{id}
--Request JSON:
-```
-{
-    "customer_id": 2,
-    "payed": true
-}
-```
+    - PUT api/orders/{id}
+    - Request JSON:
+    ```
+    {
+        "customer_id": 2,
+        "payed": true
+    }
+    ```
 
-##Delete a selected order
-    -DELETE api/orders/{id}
+## Delete a selected order
 
-##Add a new product to an order
+    - DELETE api/orders/{id}
 
--POST api/orders/{id}/add
--Request JSON:
-```
-{
-    "product_id": 1 
-}
-```
+## Add a new product to an order
 
-##Pay an order, with a selected payment provider
+    - POST api/orders/{id}/add
+    - Request JSON:
+    ```
+    {
+        "product_id": 1 
+    }
+    ```
 
--POST api/orders/{id}/pay
--Request JSON:
-```
-{
-    "payment_provider_id": 1
-}
-```
+## Pay an order, with a selected payment provider
 
-##List of payment providers (prepared for more providers in the future)
+    - POST api/orders/{id}/pay
+    - Request JSON:
+    ```
+    {
+        "payment_provider_id": 1
+    }
+    ```
 
--GET api/payment-providers
+## List of payment providers (prepared for more providers in the future)
+
+    - GET api/payment-providers
 
 __________________
-#MY TIME SCHEDULE
+# **MY TIME SCHEDULE**
 

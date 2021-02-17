@@ -74,6 +74,9 @@ class OrderController extends Controller
         } catch(Exception $e) {
             DB::rollback();
             report($e);
+            return response()->json([
+                'message' => 'Failed to create new order'
+            ],422);
         }
 
         return response()->json(['success' => true],200);
@@ -112,6 +115,9 @@ class OrderController extends Controller
         } catch(Exception $e) {
             DB::rollback();
             report($e);
+            return response()->json([
+                'message' => 'Failed to update order'
+            ],422);
         }
 
         return response()->json(['success' => true],200);
@@ -152,6 +158,9 @@ class OrderController extends Controller
         } catch(Exception $e) {
             DB::rollback();
             report($e);
+            return response()->json([
+                'message' => 'Failed to delete order'
+            ],422);
         }
 
         return response()->json(['success' => true],200);
@@ -199,6 +208,9 @@ class OrderController extends Controller
         } catch(Exception $e) {
             DB::rollback();
             report($e);
+            return response()->json([
+                'message' => 'Failed to add product to an order'
+            ],422);
         }
 
         return response()->json(['success' => true],200);
@@ -258,6 +270,9 @@ class OrderController extends Controller
         } catch(Exception $e) {
             DB::rollback();
             report($e);
+            return response()->json([
+                'message' => 'Payment failed!'
+            ],422);
         }
 
         if($success) {

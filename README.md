@@ -32,6 +32,12 @@ ________________
 ___________
 # **ENDPOINTS**
 
+## PUT and POST request header needs:
+
+    ```
+        Accept: application/json
+    ```
+
 ## List of orders
 
     - GET api/orders
